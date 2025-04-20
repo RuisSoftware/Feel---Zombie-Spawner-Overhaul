@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ModInfo>
+  <Name>EdgeSpawnZombieMod</Name>
+  <Description>Overhauls the zombie spawn system. Zombies spawn at map edges and travel inward, only appearing (spawning) when a player is nearby.</Description>
+  <Author>Joffrey</Author>
+  <Version>1.0</Version>
+  <Compatibility Version="1.4" />
+  <!-- Compatible with 7 Days to Die v1.4 -->
+</ModInfo>

@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <!-- Disable all default world zombie spawns by setting their max counts to 0 -->
+  <set xpath="/spawning/biome/spawn/@maxcount">0</set>
+</config>
