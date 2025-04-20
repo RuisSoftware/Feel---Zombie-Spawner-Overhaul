@@ -169,58 +169,22 @@ public static class VirtualZombieManager
         Vector3 pos = vz.currentPos;
         Vector3 target = vz.destPos;
 
+        // Bereken directionele vector naar het doel
         Vector3 direction = new Vector3(target.x - pos.x, 0, target.z - pos.z);
         float distance = direction.magnitude;
+
         if (distance < vz.moveStep)
         {
             vz.currentPos = target;
-            vz.currentPos.y = GetTerrainHeight(target.x, target.z);
+            vz.currentPos.y = GameManager.Instance.World.ChunkCache.ChunkProvider.GetTerrainGenerator().GetTerrainHeightAt((int)target.x, (int)target.z);
             return;
         }
 
         direction.Normalize();
         Vector3 newPos = pos + direction * vz.moveStep;
-        float newHeight = GetTerrainHeight(newPos.x, newPos.z);
-        float currentHeight = GetTerrainHeight(pos.x, pos.z);
 
-        if (newHeight - currentHeight > 3.0f)
-        {
-            // Obstacle detected, try left or right
-            Vector3 cross = new Vector3(-direction.z, 0, direction.x);
-            cross.Normalize();
-            Vector3 leftPos = pos + cross * vz.moveStep;
-            Vector3 rightPos = pos - cross * vz.moveStep;
-            float leftHeight = GetTerrainHeight(leftPos.x, leftPos.z);
-            float rightHeight = GetTerrainHeight(rightPos.x, rightPos.z);
-
-            bool moved = false;
-
-            if (leftHeight - currentHeight < 3.0f && leftHeight <= rightHeight)
-            {
-                newPos = leftPos;
-                newPos.y = leftHeight;
-                Log.Out($"[ZombieSpawnerMod] Obstacle: Zombie #{vz.id} ontwijkt obstakel via links (obstakel op ({(int)newPos.x}, {(int)newPos.z}))");
-                moved = true;
-            }
-            else if (rightHeight - currentHeight < 3.0f && rightHeight < leftHeight)
-            {
-                newPos = rightPos;
-                newPos.y = rightHeight;
-                Log.Out($"[ZombieSpawnerMod] Obstacle: Zombie #{vz.id} ontwijkt obstakel via rechts (obstakel op ({(int)newPos.x}, {(int)newPos.z}))");
-                moved = true;
-            }
-
-            if (!moved)
-            {
-                // Alle kanten geblokkeerd, blijf stilstaan
-                return;
-            }
-        }
-        else
-        {
-            // Geen obstakel, normale beweging
-            newPos.y = newHeight;
-        }
+        // Alleen de hoogte bepalen op het nieuwe punt, verder geen obstakel-check
+        newPos.y = GameManager.Instance.World.ChunkCache.ChunkProvider.GetTerrainGenerator().GetTerrainHeightAt((int)newPos.x, (int)newPos.z);
 
         vz.currentPos = newPos;
     }
